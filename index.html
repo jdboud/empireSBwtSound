@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15-Second Video Loops</title>
+    <style>
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .video-container video {
+            width: 4.78%; /* Adjust size as needed */
+        }
+        video::-webkit-media-controls {
+            display: none !important; /* Hide controls on hover */
+        }
+        video::-moz-media-controls {
+            display: none !important; /* Hide controls on hover */
+        }
+        video::-ms-media-controls {
+            display: none !important; /* Hide controls on hover */
+        }
+        video::-o-media-controls {
+            display: none !important; /* Hide controls on hover */
+        }
+        video::media-controls {
+            display: none !important; /* Hide controls on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container" id="videoContainer">
+        <!-- Video elements will be generated here by JavaScript -->
+    </div>
+    <script>
+        const videoContainer = document.getElementById('videoContainer');
+        const numberOfVideos = 540; // Number of video clips from output000.webm to output539.webm
+
+        for (let i = 0; i < numberOfVideos; i++) {
+            const videoElement = document.createElement('video');
+            videoElement.src = `output${i.toString().padStart(3, '0')}.webm`;
+            videoElement.setAttribute('loop', 'true');
+            videoElement.setAttribute('muted', 'true');
+            videoElement.setAttribute('playsinline', 'true'); // Ensures autoplay works on mobile
+            videoElement.autoplay = true;
+            videoElement.controls = false; // Hide controls initially
+            videoContainer.appendChild(videoElement);
+
+            // Ensure autoplay
+            videoElement.addEventListener('canplay', () => {
+                videoElement.play();
+            });
+
+            // Mute all other videos and unmute the hovered video
+            videoElement.addEventListener('mouseover', () => {
+                document.querySelectorAll('video').forEach(video => {
+                    if (video !== videoElement) {
+                        video.muted = true;
+                    }
+                });
+                videoElement.muted = false;
+                videoElement.controls = true; // Show controls on hover
+            });
+
+            // Re-mute the video when the mouse leaves
+            videoElement.addEventListener('mouseout', () => {
+                videoElement.muted = true;
+                videoElement.controls = false; // Hide controls when not hovering
+            });
+        }
+    </script>
+</body>
+</html>
